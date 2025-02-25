@@ -18,6 +18,7 @@ const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
+let enemyTank = {x:0, y:0};
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonX > 50) {
@@ -66,6 +67,38 @@ function drawTarget() {
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
     ctx.stroke();
+}
+
+// function generateEnemyTank() {
+//     let validPositions = terrain.filter(t => t.x > canvas.width / 2);
+
+//     if (validPositions.length > 0) {
+//         let chosenSpot = validPositions[Math.floor(Math.random() * validPositions.length)];
+//         enemyTank.x = chosenSpot.x;
+//         enemyTank.y = chosenSpot.y - 15;
+//     }
+// }
+
+function generateEnemyTank() {
+    return Math.floor(Math.random() * (500 - 400 + 1));
+}
+
+function drawEnemyTank() {
+    //enemyTank.x = generateEnemyTank();
+    ctx.fillStyle = "#8B0000";
+    // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
+    ctx.fillRect(enemyTank.x, 200, 60, 30);
+
+    ctx.fillStyle = "#550000";
+    //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
+    ctx.fillRect(500-5, 200-10, 40, 10);
+
+    // ctx.fillStyle = "black";
+    // for(let i=-15; i<=15; i+=10) {
+    //     ctx.beginPath();
+    //     ctx.arc(enemyTank.x + i, enemyTank.y + 10, 3, 0, Math.PI * 2);
+    //     ctx.fill();
+    // }
 }
 
 function createExplosion(x,y) {
@@ -185,7 +218,7 @@ function drawCannon() {
     ctx.fillStyle = "black";
     for (let i=-20; i<=20; i+=10) {
         ctx.beginPath();
-        ctx.arc(cannonX+i, cannonY+32, 5, 0, Math.PI * 2);
+        ctx.arc(cannonX+i, cannonY+32, 10, 0, Math.PI * 2);
         ctx.fill();
     }
 
@@ -243,6 +276,7 @@ function fireCannon() {
     console.log(`Intial Vx: ${velocityX.toFixed(2)}`)
     console.log(`Intial Vy: ${velocityY.toFixed(2)}`)
     console.log(`Projectiles in Air: ${projectiles.length}`)
+    console.log(`enemyTank position: ${enemyTank.x, enemyTank.y}`)
 }
 
 function updateDebug() {
@@ -260,13 +294,16 @@ function updateDebug() {
     Intial Vy: ${velocityY.toFixed(2)}
     Projectiles in Air: ${projectiles.length}
     Debris Particles: ${debrisParticles.length}
+    EnemyTank: ${enemyTank}
     `
 }
 
 function updateProjectiles() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
     drawCannon();
-    drawTarget();
+    //drawTarget();
+    //generateEnemyTank();
+    drawEnemyTank();
     drawTerrain();
 
     projectiles.forEach((p, index) => {
@@ -279,7 +316,7 @@ function updateProjectiles() {
         ctx.fillStyle = "black";
         ctx.fill();
 
-        if (checkCollision(p)) {
+        if (checkTankCollision(p)) {
             createExplosion(p.x, p.y);
             projectiles.splice(index, 1)
             explosionSound.currentTime = 0;
