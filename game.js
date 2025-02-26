@@ -18,7 +18,7 @@ const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:0};
+let enemyTank = {x:500, y:200};
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonX > 50) {
@@ -87,11 +87,11 @@ function drawEnemyTank() {
     //enemyTank.x = generateEnemyTank();
     ctx.fillStyle = "#8B0000";
     // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
-    ctx.fillRect(enemyTank.x, 200, 60, 30);
+    ctx.fillRect(enemyTank.x, enemyTank.y, 60, 30);
 
     ctx.fillStyle = "#550000";
     //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
-    ctx.fillRect(500-5, 200-10, 40, 10);
+    ctx.fillRect(enemyTank.x-5, enemyTank.y-10, 40, 10);
 
     // ctx.fillStyle = "black";
     // for(let i=-15; i<=15; i+=10) {
@@ -276,7 +276,8 @@ function fireCannon() {
     console.log(`Intial Vx: ${velocityX.toFixed(2)}`)
     console.log(`Intial Vy: ${velocityY.toFixed(2)}`)
     console.log(`Projectiles in Air: ${projectiles.length}`)
-    console.log(`enemyTank position: ${enemyTank.x, enemyTank.y}`)
+    console.log(`enemyTank xposition: ${enemyTank.x}`)
+    console.log(`enemyTank yposition: ${enemyTank.y}`)
 }
 
 function updateDebug() {
