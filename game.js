@@ -18,7 +18,7 @@ const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:500, y:200};
+let enemyTank = {x:0, y:200};
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonX > 50) {
@@ -50,7 +50,6 @@ document.addEventListener("keydown", function(event) {
     }
 
     drawCannon();
-    // updateDebug();
 })
 
 function drawTarget() {
@@ -69,70 +68,10 @@ function drawTarget() {
     ctx.stroke();
 }
 
-// function generateEnemyTank() {
-//     let validPositions = terrain.filter(t => t.x > canvas.width / 2);
-
-//     if (validPositions.length > 0) {
-//         let chosenSpot = validPositions[Math.floor(Math.random() * validPositions.length)];
-//         enemyTank.x = chosenSpot.x;
-//         enemyTank.y = chosenSpot.y - 15;
-//     }
-// }
-
 function generateEnemyTank() {
-    return Math.floor(Math.random() * (500 - 400 + 1));
+    enemyTank.x = Math.floor(Math.random() * (600 - 400 + 1)) + 400;
+    enemyTank.y = Math.floor(Math.random() * (240 - 190 + 1)) + 190;
 }
-
-function deBugLines() {
-    // 400 line
-    ctx.beginPath();
-    ctx.moveTo(400,0);
-    ctx.lineTo(400, canvas.height);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // 450 line
-    ctx.beginPath();
-    ctx.moveTo(450,0);
-    ctx.lineTo(450, canvas.height);
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // 495
-    ctx.beginPath();
-    ctx.moveTo(495,0);
-    ctx.lineTo(495, canvas.height);
-    ctx.strokeStyle = "green";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // 100 line
-    ctx.beginPath();
-    ctx.moveTo(0,100);
-    ctx.lineTo(canvas.width, 100);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // 150 line
-    ctx.beginPath();
-    ctx.moveTo(0,150);
-    ctx.lineTo(canvas.width, 150);
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // 195 line
-    ctx.beginPath();
-    ctx.moveTo(0,195);
-    ctx.lineTo(canvas.width, 195);
-    ctx.strokeStyle = "green";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
-
 
 function drawEnemyTank() {
     //enemyTank.x = generateEnemyTank();
@@ -394,5 +333,6 @@ function updateProjectiles() {
     requestAnimationFrame(updateProjectiles);
 }
 
+generateEnemyTank();
 generateTerrain();
 updateProjectiles();

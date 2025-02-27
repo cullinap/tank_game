@@ -33,10 +33,10 @@ function checkTankCollision(p) {
             `
         )
     } else if (
-        p.x >= 480 && 
+        p.x >= 450 && 
         p.x <= 560 && 
         p.y >= 190 && 
-        p.y <= 240
+        p.y <= 260
     ) {
         console.log(
             `
