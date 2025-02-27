@@ -83,15 +83,66 @@ function generateEnemyTank() {
     return Math.floor(Math.random() * (500 - 400 + 1));
 }
 
+function deBugLines() {
+    // 400 line
+    ctx.beginPath();
+    ctx.moveTo(400,0);
+    ctx.lineTo(400, canvas.height);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 450 line
+    ctx.beginPath();
+    ctx.moveTo(450,0);
+    ctx.lineTo(450, canvas.height);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 495
+    ctx.beginPath();
+    ctx.moveTo(495,0);
+    ctx.lineTo(495, canvas.height);
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 100 line
+    ctx.beginPath();
+    ctx.moveTo(0,100);
+    ctx.lineTo(canvas.width, 100);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 150 line
+    ctx.beginPath();
+    ctx.moveTo(0,150);
+    ctx.lineTo(canvas.width, 150);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 195 line
+    ctx.beginPath();
+    ctx.moveTo(0,195);
+    ctx.lineTo(canvas.width, 195);
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+
+
 function drawEnemyTank() {
     //enemyTank.x = generateEnemyTank();
     ctx.fillStyle = "#8B0000";
     // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
-    ctx.fillRect(enemyTank.x, enemyTank.y, 60, 30);
+    ctx.fillRect(enemyTank.x, enemyTank.y, 40, 20);
 
-    ctx.fillStyle = "#550000";
-    //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
-    ctx.fillRect(enemyTank.x-5, enemyTank.y-10, 40, 10);
+    // ctx.fillStyle = "#550000";
+    // //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
+    // ctx.fillRect(enemyTank.x-5, enemyTank.y-10, 40, 10);
 
     // ctx.fillStyle = "black";
     // for(let i=-15; i<=15; i+=10) {
@@ -304,6 +355,7 @@ function updateProjectiles() {
     drawCannon();
     //drawTarget();
     //generateEnemyTank();
+    deBugLines();
     drawEnemyTank();
     drawTerrain();
 

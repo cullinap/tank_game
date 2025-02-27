@@ -9,25 +9,56 @@ function checkCollision(p) {
 function checkTankCollision(p) {
     let tankWidth = 40;
     let tankHeight = 20;
-    if (p.x >= 480 && p.x <= 520) {
-        console.log(`check enemy tankx1 ${p.x >= enemyTank.x - tankWidth / 2}`)
-        console.log(`projectile p.x ${p.x}`)
-        //console.log(`tankx1 tank-x/width ${enemyTank.x - tankWidth / 2}`)
-        console.log(`check enemy tankx2 ${p.x <= enemyTank.x + tankWidth / 2}`)
-        //console.log(`check tankx2 ${enemyTank.x + tankWidth / 2}`)
-        
-        console.log(`check enemy tanky1 ${p.y >= enemyTank.y}`)
-        console.log(`check enemy tanky1 ${p.y <= enemyTank.y + tankHeight}`)
-        console.log(`project y pos ${p.y}`)
-        //console.log(`y1 size ${enemyTank.y}`)
-        //console.log(`check enemy tanky2 ${p.y <= enemyTank.y + tankHeight}`)
-    }
+    if (
+        p.x >= 500 && 
+        p.x <= 540 && 
+        p.y >= 200 && 
+        p.y <= 220
+    ) {
+        console.log(
+            `
+             Shot report:
+             Min x: ${p.x >= enemyTank.x}
+             Max x: ${p.x <= enemyTank.x + tankWidth}
+             Max y: ${p.y >= enemyTank.y} 
+             Min y: ${p.y <= enemyTank.y + tankHeight}
+             Projectile Position position:
+             Projectile x: ${p.x}
+             Projectile y: ${p.y}
+             Tank position:
+             Tank left: ${enemyTank.x}
+             Tank right: ${enemyTank.x + tankWidth}
+             Tank top: ${enemyTank.y}
+             Tank bottom: ${enemyTank.y + tankHeight}
+            `
+        )
+    } else if (
+        p.x >= 480 && 
+        p.x <= 560 && 
+        p.y >= 190 && 
+        p.y <= 240
+    ) {
+        console.log(
+            `
+             Projectile Position position:
+             Projectile x: ${p.x}
+             Projectile y: ${p.y}
+            `
+        )
+        // if (p.x >= 500 && p.x <= 540) {
+        //     console.log("x hit")
+        // }
 
+        // if (p.y >= 200 && p.y <= 220) {
+        //     console.log("y hit")
+        // }
+
+    }
     // if between 480 and 520 and 200 and 220
     return (
-        p.x >= enemyTank.x - tankWidth / 2 && // 480
-        p.x <= enemyTank.x + tankWidth / 2 && // 520
-        p.y >= enemyTank.y - 50 && // 200
-        p.y <= enemyTank.y + tankHeight // 220
+        p.x >= enemyTank.x && // 500 left
+        p.x <= enemyTank.x + tankWidth && // 520 right
+        p.y >= enemyTank.y && // 200 top
+        p.y <= enemyTank.y + tankHeight // 220 bottom 
     );
 }
