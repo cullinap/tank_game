@@ -8,7 +8,7 @@ let cannonSpeed = 10;
 let explosions = [];
 let debrisParticles = [];
 const cannonY = canvas.height * 0.7 - 30;
-const terrain = [];
+//const terrain = [];
 const terrainWidth = canvas.width;
 const terrainResolution = 5;
 const angleSlider = document.getElementById("angleControl");
@@ -169,6 +169,6 @@ function updateProjectiles() {
     requestAnimationFrame(updateProjectiles);
 }
 
-generateEnemyTank();
 generateTerrain();
+generateEnemyTank();
 updateProjectiles();

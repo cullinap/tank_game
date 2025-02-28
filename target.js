@@ -16,7 +16,15 @@ function drawTarget() {
 
 function generateEnemyTank() {
     enemyTank.x = Math.floor(Math.random() * (600 - 400 + 1)) + 400;
-    enemyTank.y = Math.floor(Math.random() * (240 - 190 + 1)) + 190;
+    //enemyTank.y = Math.floor(Math.random() * (240 - 190 + 1)) + 190;
+
+    let closetPoint = terrain.find(t => Math.abs(t.x - enemyTank.x) < terrainResolution)
+
+    if (closetPoint) {
+        enemyTank.y = closetPoint.y - 20;
+    } else {
+        enemyTank.y = 200;
+    }
 }
 
 function drawEnemyTank() {

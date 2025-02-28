@@ -1,3 +1,4 @@
+let terrain = [];
 
 function generateTerrain() {
     let flatGroundWidth = 200;
