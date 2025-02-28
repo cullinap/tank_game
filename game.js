@@ -18,7 +18,7 @@ const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:200};
+let enemyTank = {x:0, y:200, angle: 0};
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonX > 50) {

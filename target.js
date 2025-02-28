@@ -18,20 +18,34 @@ function generateEnemyTank() {
     enemyTank.x = Math.floor(Math.random() * (600 - 400 + 1)) + 400;
     //enemyTank.y = Math.floor(Math.random() * (240 - 190 + 1)) + 190;
 
-    let closetPoint = terrain.find(t => Math.abs(t.x - enemyTank.x) < terrainResolution)
+    let leftPoint = terrain.find(t => t.x >= enemyTank.x - terrainResolution)
+    let rightPoint = terrain.find(t => t.x >= enemyTank.x + terrainResolution)
 
-    if (closetPoint) {
-        enemyTank.y = closetPoint.y - 20;
+    if (leftPoint && rightPoint) {
+        let deltaX = rightPoint.x - leftPoint.x;
+        let deltaY = rightPoint.y - leftPoint.y;
+
+        enemyTank.angle = Math.atan2(deltaY, deltaX) * (100 / Math.PI);
+        enemyTank.y = leftPoint.y - 20;
     } else {
         enemyTank.y = 200;
+        enemyTank.angle = 0;
     }
 }
 
 function drawEnemyTank() {
+    ctx.save();
+    ctx.translate(enemyTank.x, enemyTank.y);
+    ctx.rotate(enemyTank.angle * Math.PI / 180);
+    
+    ctx.fillStyle = "#8B0000"; 
+    ctx.fillRect(-20, 0, 40, 20);
+
+    ctx.restore();
     //enemyTank.x = generateEnemyTank();
-    ctx.fillStyle = "#8B0000";
-    // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
-    ctx.fillRect(enemyTank.x, enemyTank.y, 40, 20);
+    // ctx.fillStyle = "#8B0000";
+    // // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
+    // ctx.fillRect(enemyTank.x, enemyTank.y, 40, 20);
 
     // ctx.fillStyle = "#550000";
     // //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
