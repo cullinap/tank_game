@@ -1,4 +1,3 @@
-
 function deBugLines() {
     // 400 line
     ctx.beginPath();

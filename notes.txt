@@ -1,0 +1,7 @@
+-sound effect
+-terrain
+-target is more realistic
+-target doesn't come too close to tank
+-different terrains for differentt levels
+-different levels
+-leader board
