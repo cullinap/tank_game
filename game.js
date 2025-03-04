@@ -3,11 +3,11 @@ const ctx = canvas.getContext("2d");
 
 let cannonAngle = 45;
 let power = 50;
-let cannonX = 75;
+//let cannonX = 75; //75
 let cannonSpeed = 10;
 let explosions = [];
 let debrisParticles = [];
-const cannonY = canvas.height * 0.7 - 30;
+//const cannonY = canvas.height * 0.7 - 30;
 //const terrain = [];
 const terrainWidth = canvas.width;
 const terrainResolution = 5;
@@ -19,14 +19,15 @@ const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
 let enemyTank = {x:0, y:200, angle: 0};
+let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 0}
 
 document.addEventListener("keydown", function(event) {
-    if (event.key == "ArrowLeft" && cannonX > 50) {
-        cannonX -= cannonSpeed;
+    if (event.key == "ArrowLeft" && cannonPos.x > 50) {
+        cannonPos.x -= cannonSpeed;
     }
 
-    if (event.key == "ArrowRight" && cannonX < 400) {
-        cannonX += cannonSpeed;
+    if (event.key == "ArrowRight" && cannonPos.x < 400) {
+        cannonPos.x += cannonSpeed;
     }
 
     if (event.key == "ArrowUp" && cannonAngle < 90) {
@@ -52,24 +53,40 @@ document.addEventListener("keydown", function(event) {
     drawCannon();
 })
 
+function generateCannonPosition() {
+    let leftPoint = terrain.find(t => t.x >= cannonPos.x - terrainResolution);
+    let rightPoint = terrain.find(t => t.x >= cannonPos.x + terrainResolution);
+
+    if (leftPoint && rightPoint) {
+        let deltaX = rightPoint.x - leftPoint.x;
+        let deltaY = rightPoint.x - leftPoint.x;
+
+        cannonPos.y = leftPoint.y - 20;
+        cannonPos.angle = Math.atan2(deltaY, deltaX) * (180/Math.PI);
+    } else {
+        cannonPos.y = canvas.height * 0.7 - 30;
+        cannonPos.angle = 0;
+    }
+}
+
 // Draw the cannon
 function drawCannon() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#4B5320";
 
     // base of cannon
-    ctx.fillRect(cannonX - 30, cannonY, 60, 30);
+    ctx.fillRect(cannonPos.x - 30, cannonPos.y, 60, 30);
 
     ctx.fillStyle = "black";
     for (let i=-20; i<=20; i+=10) {
         ctx.beginPath();
-        ctx.arc(cannonX+i, cannonY+32, 10, 0, Math.PI * 2);
+        ctx.arc(cannonPos.x+i, cannonPos.y+32, 10, 0, Math.PI * 2);
         ctx.fill();
     }
 
     // Cannon barrel (rotating)
     ctx.save();
-    ctx.translate(cannonX, cannonY - 5);
+    ctx.translate(cannonPos.x, cannonPos.y - 5);
     ctx.rotate(-cannonAngle * Math.PI / 180); // degrees * pi / 180
     ctx.fillStyle = '#333';
     ctx.fillRect(0, -5, 50, 10);
@@ -105,8 +122,8 @@ function fireCannon() {
     let velocityY = -Math.sin(angleRad) * power; // vertical speed
 
     projectiles.push({
-        x: cannonX,
-        y: cannonY - 5,
+        x: cannonPos.x,
+        y: cannonPos.y - 5,
         vx: velocityX / 5,
         vy: velocityY / 5,
         gravity: 0.2,
@@ -127,6 +144,7 @@ function fireCannon() {
 
 function updateProjectiles() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
+    generateCannonPosition();
     drawCannon();
     //drawTarget();
     //generateEnemyTank();

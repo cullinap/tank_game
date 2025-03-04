@@ -1,7 +1,7 @@
 let terrain = [];
 
 function generateTerrain() {
-    let flatGroundWidth = 200;
+    let flatGroundWidth = 0;
     let height = canvas.height * 0.7;
 
     for(let x=0; x < terrainWidth; x+=terrainResolution) {
