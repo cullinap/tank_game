@@ -1,7 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let cannonAngle = 45;
+//let cannonAngle = 45;
 let power = 50;
 //let cannonX = 75; //75
 let cannonSpeed = 10;
@@ -19,7 +19,7 @@ const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
 let enemyTank = {x:0, y:200, angle: 0};
-let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 0}
+let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45};
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonPos.x > 50) {
@@ -30,14 +30,14 @@ document.addEventListener("keydown", function(event) {
         cannonPos.x += cannonSpeed;
     }
 
-    if (event.key == "ArrowUp" && cannonAngle < 90) {
-        cannonAngle += 2;
-        angleSlider.value = cannonAngle;
+    if (event.key == "ArrowUp" && cannonPos.angle < 90) {
+        cannonPos.angle += 2;
+        angleSlider.value = cannonPos.angle;
     }
 
-    if (event.key == "ArrowDown" && cannonAngle > 0) {
-        cannonAngle -= 2;
-        angleSlider.value = cannonAngle;
+    if (event.key == "ArrowDown" && cannonPos.angle > 0) {
+        cannonPos.angle -= 2;
+        angleSlider.value = cannonPos.angle;
     }
 
     if (event.key == "w" && power < 100) {
@@ -62,7 +62,7 @@ function generateCannonPosition() {
         let deltaY = rightPoint.x - leftPoint.x;
 
         cannonPos.y = leftPoint.y - 20;
-        cannonPos.angle = Math.atan2(deltaY, deltaX) * (180/Math.PI);
+        //cannonPos.angle = Math.atan2(deltaY, deltaX) * (180/Math.PI);
     } else {
         cannonPos.y = canvas.height * 0.7 - 30;
         cannonPos.angle = 0;
@@ -86,8 +86,8 @@ function drawCannon() {
 
     // Cannon barrel (rotating)
     ctx.save();
-    ctx.translate(cannonPos.x, cannonPos.y - 5);
-    ctx.rotate(-cannonAngle * Math.PI / 180); // degrees * pi / 180
+    ctx.translate(cannonPos.x, cannonPos.y);
+    ctx.rotate(-cannonPos.angle * Math.PI / 180); // degrees * pi / 180
     ctx.fillStyle = '#333';
     ctx.fillRect(0, -5, 50, 10);
     ctx.restore();
@@ -95,7 +95,7 @@ function drawCannon() {
 
 // update angle from the slider
 document.getElementById("angleControl").addEventListener("input", (e) => {
-    cannonAngle = e.target.value;
+    cannonPos.angle = e.target.value;
     drawCannon();
 });
 
@@ -117,7 +117,7 @@ function fireCannon() {
     shotsLeft--;
     updateShots();
 
-    let angleRad = cannonAngle * Math.PI / 180; // angle of cannon in Radians calc initial horizontal and vertical velocity component
+    let angleRad = cannonPos.angle * Math.PI / 180; // angle of cannon in Radians calc initial horizontal and vertical velocity component
     let velocityX = Math.cos(angleRad) * power; // horizontal speed
     let velocityY = -Math.sin(angleRad) * power; // vertical speed
 
@@ -133,7 +133,7 @@ function fireCannon() {
     fireSound.play();
 
     console.log(`Firing Cannon! 🎯`)
-    console.log(`Angle (Degrees): ${cannonAngle}`)
+    console.log(`Angle (Degrees): ${cannonPos.angle}`)
     console.log(`Power: ${power}`)
     console.log(`Intial Vx: ${velocityX.toFixed(2)}`)
     console.log(`Intial Vy: ${velocityY.toFixed(2)}`)
