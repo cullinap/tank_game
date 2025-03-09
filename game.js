@@ -173,12 +173,19 @@ function updateProjectiles() {
             displayMessage("🎯 Hit!");
         }
 
-        // Remove if off screen
-        if (p.y > canvas.height) {
-            projectiles.splice(index, 1);
-            missSound.currentTime = 0;
-            missSound.play()
-            displayMessage("❌ Miss!"); 
+        let leftPoint = terrain.find(t => t.x >= p.x - terrainResolution);
+        let rightPoint = terrain.find(t => t.x >= p.x + terrainResolution);
+        
+        if (leftPoint && rightPoint) {
+            let groundY = leftPoint.y + (rightPoint.y - leftPoint.y) * ((p.x - leftPoint.x) / (rightPoint.x - leftPoint.x))
+            
+            if (p.y >= groundY ) {
+                createExplosion(p.x, groundY)
+                projectiles.splice(index, 1);
+                explosionSound.currentTime = 0;
+                explosionSound.play()
+                displayMessage("❌ Miss!");
+            }
         }
     });
    

@@ -75,3 +75,9 @@ function checkTankCollision(p) {
         unrotatedY <= halfHeight
     );
 }
+
+function checkGroundCollision(p) {
+    console.log('here')
+    console.log(p.x)
+    console.log(terrain[p.x])
+}
