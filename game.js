@@ -114,6 +114,11 @@ function fireCannon() {
         return;
     }
 
+    if (enemyHealth <= 0) {
+        displayMessage("enemy tank destroyed");
+        return;
+    }
+
     shotsLeft--;
     updateShots();
 
@@ -148,7 +153,7 @@ function updateProjectiles() {
     drawCannon();
     //drawTarget();
     //generateEnemyTank();
-    deBugLines();
+    //deBugLines();
     drawEnemyTank();
     drawTerrain();
 
@@ -170,6 +175,7 @@ function updateProjectiles() {
             updateScore(1);
             //drawDebris();
             //drawExplosions();
+            checkEnemyTankHealth(1)
             displayMessage("🎯 Hit!");
         }
 
