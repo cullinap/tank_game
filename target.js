@@ -46,21 +46,21 @@ function drawEnemyTank() {
     ctx.fillRect(-20, 0, 40, 20);
 
     ctx.restore();
-    //enemyTank.x = generateEnemyTank();
-    // ctx.fillStyle = "#8B0000";
-    // // ctx.fillRect(enemyTank.x - 20, enemyTank.y, 40, 20);
-    // ctx.fillRect(enemyTank.x, enemyTank.y, 40, 20);
+    
+    let barWidth = 40; 
+    let barHeight = 5;
+    let healthPercentage = enemyTank.health / 3;
 
-    // ctx.fillStyle = "#550000";
-    // //ctx.fillRect(enemyTank.x - 5, enemyTank.y - 10, 20, 5);
-    // ctx.fillRect(enemyTank.x-5, enemyTank.y-10, 40, 10);
+    ctx.fillStyle = 
+        healthPercentage > 0.5 ? "green":
+        healthPercentage > 0.3 ? "yellow":
+        "red";
 
-    // ctx.fillStyle = "black";
-    // for(let i=-15; i<=15; i+=10) {
-    //     ctx.beginPath();
-    //     ctx.arc(enemyTank.x + i, enemyTank.y + 10, 3, 0, Math.PI * 2);
-    //     ctx.fill();
-    // }
+    ctx.fillRect(enemyTank.x - barWidth/2, enemyTank.y - 10, barWidth * healthPercentage, barHeight);
+
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(enemyTank.x - barWidth/2, enemyTank.y - 10, barWidth, barHeight)
+
 }
 
 function resetTarget() {
