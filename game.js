@@ -18,7 +18,7 @@ const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:200, angle: 0};
+let enemyTank = {x:0, y:200, angle: 0, health: 3, destroyed: false};
 let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45};
 
 document.addEventListener("keydown", function(event) {
@@ -175,7 +175,7 @@ function updateProjectiles() {
             updateScore(1);
             //drawDebris();
             //drawExplosions();
-            checkEnemyTankHealth(1)
+            //checkEnemyTankHealth(1)
             displayMessage("🎯 Hit!");
         }
 

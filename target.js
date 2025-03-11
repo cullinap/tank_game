@@ -34,7 +34,7 @@ function generateEnemyTank() {
 }
 
 function drawEnemyTank() {
-    if (enemyHealth <= 0) {
+    if (enemyTank.destroyed ) {
         return;
     }
 
