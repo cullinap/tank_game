@@ -34,6 +34,10 @@ function generateEnemyTank() {
 }
 
 function drawEnemyTank() {
+    if (enemyHealth <= 0) {
+        return;
+    }
+
     ctx.save();
     ctx.translate(enemyTank.x, enemyTank.y);
     ctx.rotate(enemyTank.angle * Math.PI / 180);
