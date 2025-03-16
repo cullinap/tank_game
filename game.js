@@ -155,6 +155,7 @@ function updateProjectiles() {
     //generateEnemyTank();
     //deBugLines();
     drawEnemyTank();
+    drawObject();
     drawTerrain();
 
     projectiles.forEach((p, index) => {
