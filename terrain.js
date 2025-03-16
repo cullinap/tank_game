@@ -14,6 +14,10 @@ function generateTerrain() {
             terrain.push({x:x, y:height});
         }
     }
+    
+    if (terrain[terrain.length - 1].x < canvas.width) {
+        terrain.push({x:canvas.width, y:canvas.height});
+    }
 }
 
 function drawTerrain() {
@@ -26,6 +30,7 @@ function drawTerrain() {
     }
 
     ctx.lineTo(canvas.height, canvas.width);
+   // ctx.lineTo(0, canvas.width);
     ctx.closePath();
     ctx.fill();
 }
