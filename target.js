@@ -56,11 +56,18 @@ function drawEnemyTank() {
         healthPercentage > 0.3 ? "yellow":
         "red";
 
-    ctx.fillRect(enemyTank.x - barWidth/2, enemyTank.y - 10, barWidth * healthPercentage, barHeight);
+    ctx.fillRect(enemyTank.x - barWidth/2, enemyTank.y - 30, barWidth * healthPercentage, barHeight);
 
     ctx.strokeStyle = "black";
-    ctx.strokeRect(enemyTank.x - barWidth/2, enemyTank.y - 10, barWidth, barHeight)
+    ctx.strokeRect(enemyTank.x - barWidth/2, enemyTank.y - 30, barWidth, barHeight)
 
+    // barrel
+    ctx.save();
+    ctx.translate(enemyTank.x, enemyTank.y);
+    ctx.rotate(210 * Math.PI / 180);
+    ctx.fillStyle = '#333';
+    ctx.fillRect(0, -5, 30, 5);
+    ctx.restore();
 }
 
 function resetTarget() {

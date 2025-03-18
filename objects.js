@@ -3,7 +3,6 @@ obj = {x:700,y:225}
 
 function generateObject() {
     obj.x = Math.floor(Math.random() * (750 - 650 + 1)) + 700;
-    console.log(obj.x)
 
     // find the x,y >= 700 -/+ TR (700-35) & (700+35)
     let leftPoint = terrain.find(t => t.x >= obj.x - terrainResolution);
