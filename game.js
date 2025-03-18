@@ -10,7 +10,7 @@ let debrisParticles = [];
 //const cannonY = canvas.height * 0.7 - 30;
 //const terrain = [];
 const terrainWidth = canvas.width;
-const terrainResolution = 5;
+const terrainResolution = 35;
 const angleSlider = document.getElementById("angleControl");
 const powerSlider = document.getElementById("powerControl");
 const fireSound = new Audio("sounds/fire.mp3")
@@ -145,6 +145,7 @@ function fireCannon() {
     console.log(`Projectiles in Air: ${projectiles.length}`)
     console.log(`enemyTank xposition: ${enemyTank.x}`)
     console.log(`enemyTank yposition: ${enemyTank.y}`)
+    console.log(terrain)
 }
 
 function updateProjectiles() {
@@ -155,6 +156,7 @@ function updateProjectiles() {
     //generateEnemyTank();
     //deBugLines();
     drawEnemyTank();
+    //generateObject();
     drawObject();
     drawTerrain();
 
@@ -203,4 +205,5 @@ function updateProjectiles() {
 
 generateTerrain();
 generateEnemyTank();
+generateObject();
 updateProjectiles();

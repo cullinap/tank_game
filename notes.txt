@@ -5,3 +5,10 @@
 -different terrains for differentt levels
 -different levels
 -leader board
+
+
+-plane that drops bombs
+-levels for different level targets
+-exploding ground
+-exploding building
+-antiaircraft guns
