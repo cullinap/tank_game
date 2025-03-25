@@ -12,3 +12,15 @@
 -exploding ground
 -exploding building
 -antiaircraft guns
+
+
+-to update the building:
+-position it to where it randomly drops in front of the tank sometimes
+-make height higher randomly
+-make it collect damage: like randomly break pieces off
+-fix building bc it changes color randomly 
+
+-to have tank shoot back
+-understand how projectiles is working for friend tank
+-make tank shoot at certain intervals 
+-friend tank take damage update 

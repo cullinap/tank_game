@@ -17,9 +17,26 @@ const fireSound = new Audio("sounds/fire.mp3")
 const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
+let gameState = 'start';
+let currentLevel = 1;
+
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
 let enemyTank = {x:0, y:200, angle: 0, health: 3, destroyed: false};
 let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45};
+
+window.addEventListener('keydown', (event) => {
+    if (gameState === 'start' && event.code === 'Space') {
+        startGame();
+    }
+})
+
+function startGame() {
+    gameState = 'playing';
+    generateTerrain();
+    generateEnemyTank();
+    generateObject();
+    updateProjectiles();
+}
 
 document.addEventListener("keydown", function(event) {
     if (event.key == "ArrowLeft" && cannonPos.x > 50) {
@@ -148,59 +165,92 @@ function fireCannon() {
     console.log(terrain)
 }
 
+function startLevel() {
+    terrain = [];
+    projectiles = [];
+    explosions = [];
+    enemyTank.destroyed = false;
+    enemyTank.health = 3 + currentLevel - 1;
+
+    generateTerrain();
+    generateCannonPosition();
+    generateEnemyTank();
+
+    displayMessage(`level ${currentLevel}`);
+}
+
+function drawLevelHUD() {
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Level: ${currentLevel}`, 0, 0);
+}
+
+
 function updateProjectiles() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
-    generateCannonPosition();
-    drawCannon();
-    //drawTarget();
-    //generateEnemyTank();
-    //deBugLines();
-    drawEnemyTank();
-    //generateObject();
-    drawObject();
-    drawTerrain();
+    drawLevelHUD();
 
-    projectiles.forEach((p, index) => {
-        p.vy += p.gravity; // increases downward velocity
-        p.x += p.vx; // move horizontally
-        p.y += p.vy; // move vertically
+    if (gameState === 'start') {
+        drawOpeningScreen();
+    } else if (gameState === 'playing') {
+        generateCannonPosition();
+        drawCannon();
+        //drawTarget();
+        //generateEnemyTank();
+        //deBugLines();
+        drawEnemyTank();
+        //generateObject();
+        drawObject();
+        drawTerrain();
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-        ctx.fillStyle = "black";
-        ctx.fill();
+        projectiles.forEach((p, index) => {
+            p.vy += p.gravity; // increases downward velocity
+            p.x += p.vx; // move horizontally
+            p.y += p.vy; // move vertically
 
-        if (checkTankCollision(p)) {
-            createExplosion(p.x, p.y);
-            projectiles.splice(index, 1)
-            explosionSound.currentTime = 0;
-            explosionSound.play()
-            updateScore(1);
-            //drawDebris();
-            //drawExplosions();
-            //checkEnemyTankHealth(1)
-            displayMessage("🎯 Hit!");
-        }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+            ctx.fillStyle = "black";
+            ctx.fill();
 
-        let leftPoint = terrain.find(t => t.x >= p.x - terrainResolution);
-        let rightPoint = terrain.find(t => t.x >= p.x + terrainResolution);
-        
-        if (leftPoint && rightPoint) {
-            let groundY = leftPoint.y + (rightPoint.y - leftPoint.y) * ((p.x - leftPoint.x) / (rightPoint.x - leftPoint.x))
-            
-            if (p.y >= groundY ) {
-                createExplosion(p.x, groundY)
-                projectiles.splice(index, 1);
+            if (checkTankCollision(p)) {
+                createExplosion(p.x, p.y);
+                projectiles.splice(index, 1)
                 explosionSound.currentTime = 0;
                 explosionSound.play()
-                displayMessage("❌ Miss!");
+                updateScore(1);
+                //drawDebris();
+                //drawExplosions();
+                //checkEnemyTankHealth(1)
+                displayMessage("🎯 Hit!");
+                if(enemyTank.destroyed) {
+                    setTimeout(() => {
+                        currentLevel++;
+                        startLevel();
+                    }, 2000);
+                }
             }
-        }
-    });
-   
-    drawExplosions();
-    drawDebris();
-    requestAnimationFrame(updateProjectiles);
+
+            let leftPoint = terrain.find(t => t.x >= p.x - terrainResolution);
+            let rightPoint = terrain.find(t => t.x >= p.x + terrainResolution);
+            
+            if (leftPoint && rightPoint) {
+                let groundY = leftPoint.y + (rightPoint.y - leftPoint.y) * ((p.x - leftPoint.x) / (rightPoint.x - leftPoint.x))
+                
+                if (p.y >= groundY ) {
+                    createExplosion(p.x, groundY)
+                    projectiles.splice(index, 1);
+                    explosionSound.currentTime = 0;
+                    explosionSound.play()
+                    displayMessage("❌ Miss!");
+                }
+            }
+        });
+    
+        drawExplosions();
+        drawDebris();
+        requestAnimationFrame(updateProjectiles);
+    }
 }
 
 generateTerrain();
