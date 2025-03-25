@@ -138,6 +138,23 @@ document.getElementById("powerControl").addEventListener("input", (e) => {
 
 drawCannon();
 
+let enemyProjectiles = []
+
+function fireEnemyCannon() {
+    let angleRad = enemyTank.angle * Math.PI;
+    console.log(angleRad);
+    let velocityX = Math.cos(angleRad) * power;
+    let velocityY = -Math.sin(angleRad) * power;
+
+    enemyProjectiles.push({
+        x: enemyTank.x,
+        y: enemyTank.y,
+        vx: velocityX / 5,
+        vy: velocityY / 5,
+        gravity: 0.2,
+    })
+}
+
 let projectiles = []
 
 function fireCannon() {
@@ -217,6 +234,17 @@ function updateProjectiles() {
         //generateObject();
         drawObject();
         drawTerrain();
+
+        enemyProjectiles.forEach((p, index) => {
+            p.vy += p.gravity;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+            ctx.fillStyle = "black";
+            ctx.fill();
+        })
 
         projectiles.forEach((p, index) => {
             p.vy += p.gravity; // increases downward velocity
