@@ -33,7 +33,7 @@ function generateObject() {
 function drawObject() {
     ctx.save();
     ctx.translate(obj.x,obj.y); //x,y
-    ctx.fillstyle = "red";
+    ctx.fillStyle = "#a0522d";
     ctx.fillRect(-20, 0, 40, 40);
     ctx.restore();
 }

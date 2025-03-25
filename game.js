@@ -22,7 +22,7 @@ let currentLevel = 1;
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
 let enemyTank = {x:0, y:200, angle: 0, health: 3, destroyed: false};
-let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45};
+let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false};
 
 window.addEventListener('keydown', (event) => {
     if (gameState === 'start' && event.code === 'Space') {
@@ -100,6 +100,21 @@ function drawCannon() {
         ctx.arc(cannonPos.x+i, cannonPos.y+32, 10, 0, Math.PI * 2);
         ctx.fill();
     }
+
+    let barWidth = 40; 
+    let barHeight = 5;
+    let healthPercentage = cannonPos.health / 3;
+
+    ctx.fillStyle = 
+        healthPercentage > 0.5 ? "green":
+        healthPercentage > 0.3 ? "yellow":
+        "red";
+
+    ctx.fillRect(cannonPos.x - barWidth/2, cannonPos.y - 30, barWidth * healthPercentage, barHeight);
+
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(cannonPos.x - barWidth/2, cannonPos.y - 30, barWidth, barHeight)
+
 
     // Cannon barrel (rotating)
     ctx.save();
