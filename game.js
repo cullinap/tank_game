@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 
 //let cannonAngle = 45;
 let power = 50;
+let enemyPower = 50;
 //let cannonX = 75; //75
 let cannonSpeed = 10;
 let explosions = [];
@@ -21,7 +22,7 @@ let gameState = 'start';
 let currentLevel = 1;
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:200, angle: 0, health: 3, destroyed: false};
+let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3, destroyed: false};
 let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false};
 
 window.addEventListener('keydown', (event) => {
@@ -67,7 +68,29 @@ document.addEventListener("keydown", function(event) {
         powerSlider.value = power; 
     }
 
+    // shadow enemykeys -- to be deleted later
+    if (event.key == "i") {
+        enemyTank.angle += 2;
+        //angleSlider.value = enemyTank.angle;
+    }
+
+    if (event.key == "k") {
+        enemyTank.angle -= 2;
+        //angleSlider.value = enemyTank.angle;
+    }
+
+    if (event.key == "j" && enemyPower < 100) {
+        enemyPower += 5; 
+        //powerSlider.value = enemyPower;
+    }
+
+    if (event.key == "l" && enemyPower > 0) {
+        enemyPower -= 5;
+        //powerSlider.value = enemyPower; 
+    }
+
     drawCannon();
+    drawEnemyTank();
 })
 
 function generateCannonPosition() {
@@ -119,6 +142,7 @@ function drawCannon() {
     // Cannon barrel (rotating)
     ctx.save();
     ctx.translate(cannonPos.x, cannonPos.y);
+    //console.log(`cannonPos Angle: ${cannonPos.angle}`)
     ctx.rotate(-cannonPos.angle * Math.PI / 180); // degrees * pi / 180
     ctx.fillStyle = '#333';
     ctx.fillRect(0, -5, 50, 10);
@@ -141,10 +165,10 @@ drawCannon();
 let enemyProjectiles = []
 
 function fireEnemyCannon() {
-    let angleRad = enemyTank.angle * Math.PI;
-    console.log(angleRad);
-    let velocityX = Math.cos(angleRad) * power;
-    let velocityY = -Math.sin(angleRad) * power;
+    console.log(`cannon enemyTank Angle: ${enemyTank.angle}`)
+    let enemyAngleRad = enemyTank.angle * Math.PI / 180;
+    let velocityX = -Math.cos(enemyAngleRad) * power;
+    let velocityY = Math.sin(enemyAngleRad) * power;
 
     enemyProjectiles.push({
         x: enemyTank.x,
@@ -211,6 +235,22 @@ function startLevel() {
     displayMessage(`level ${currentLevel}`);
 }
 
+function endLevel() {
+    terrain = [];
+    projectiles = [];
+    explosions = [];
+    enemyTank.destroyed = false;
+    enemyTank.health = 3 + currentLevel - 1;
+    cannonPos.destroyed = false;
+    cannonPos.health = 3 + currentLevel - 1;
+
+    generateTerrain();
+    generateCannonPosition();
+    generateEnemyTank();
+
+    displayMessage(`level ${currentLevel}`);
+}
+
 function drawLevelHUD() {
     ctx.fillStyle = 'black';
     ctx.font = '20px Arial';
@@ -234,6 +274,7 @@ function updateProjectiles() {
         //generateObject();
         drawObject();
         drawTerrain();
+        drawEnemyTargetLine();
 
         enemyProjectiles.forEach((p, index) => {
             p.vy += p.gravity;
@@ -244,6 +285,35 @@ function updateProjectiles() {
             ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
             ctx.fillStyle = "black";
             ctx.fill();
+
+            if (checkEnemyTankCollision(p)) {
+                createExplosion(p.x, p.y);
+                projectiles.splice(index, 1);
+                explosionSound.currentTime = 0;
+                explosionSound.play();
+                displayMessage("Damage!");
+                if(cannonPos.destroyed) {
+                    setTimeout(() => {
+                        if(currentLevel <= 1) {currentLevel = 0} else {currentLevel--};
+                        endLevel();
+                    }, 2000);
+                }
+            }
+
+            let leftPoint = terrain.find(t => t.x >= p.x - terrainResolution);
+            let rightPoint = terrain.find(t => t.x >= p.x + terrainResolution);
+            
+            if (leftPoint && rightPoint) {
+                let groundY = leftPoint.y + (rightPoint.y - leftPoint.y) * ((p.x - leftPoint.x) / (rightPoint.x - leftPoint.x))
+                
+                if (p.y >= groundY ) {
+                    createExplosion(p.x, groundY)
+                    projectiles.splice(index, 1);
+                    explosionSound.currentTime = 0;
+                    explosionSound.play()
+                    displayMessage("❌ Enemy Miss!");
+                }
+            }
         })
 
         projectiles.forEach((p, index) => {

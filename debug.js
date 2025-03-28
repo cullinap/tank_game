@@ -47,3 +47,23 @@ function deBugLines() {
     ctx.lineWidth = 2;
     ctx.stroke();
 }
+
+function drawEnemyTargetLine() {
+    let enAngleRad = (enemyTank.angle * Math.PI)/180; //45
+    //console.log(`angle: ${enAngleRad}`);
+    console.log(`barrel angle: ${enemyTank.angle}`)
+
+    let enemyCannonX = enemyTank.x;
+    let enemyCannonY = enemyTank.y;
+
+    let length = 50 * 2; // power * 2
+    let endX = enemyCannonX + -Math.cos(enAngleRad) * length;
+    let endY = enemyCannonY + Math.sin(enAngleRad) * length;
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(enemyCannonX, enemyCannonY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+}

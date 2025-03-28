@@ -25,11 +25,11 @@ function generateEnemyTank() {
         let deltaX = rightPoint.x - leftPoint.x;
         let deltaY = rightPoint.y - leftPoint.y;
 
-        enemyTank.angle = Math.atan2(deltaY, deltaX) * (100 / Math.PI);
+        enemyTank.bodyAngle = Math.atan2(deltaY, deltaX) * (100 / Math.PI);
         enemyTank.y = leftPoint.y - 20;
     } else {
         enemyTank.y = 200;
-        enemyTank.angle = 0;
+        enemyTank.bodyAngle = 0;
     }
 }
 
@@ -40,7 +40,7 @@ function drawEnemyTank() {
 
     ctx.save();
     ctx.translate(enemyTank.x, enemyTank.y);
-    ctx.rotate(enemyTank.angle * Math.PI / 180);
+    ctx.rotate(enemyTank.bodyAngle * Math.PI / 180);
     
     ctx.fillStyle = "#8B0000"; 
     ctx.fillRect(-20, 0, 40, 20);
@@ -64,7 +64,8 @@ function drawEnemyTank() {
     // barrel
     ctx.save();
     ctx.translate(enemyTank.x, enemyTank.y);
-    ctx.rotate(210 * Math.PI / 180);
+    //console.log(`barrel enemyTank Angle: ${-(enemyTank.angle+180) * Math.PI/180}`)
+    ctx.rotate(-(enemyTank.angle+180) * Math.PI/180);
     ctx.fillStyle = '#333';
     ctx.fillRect(0, -5, 30, 5);
     ctx.restore();
