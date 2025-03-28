@@ -22,7 +22,7 @@ let gameState = 'start';
 let currentLevel = 1;
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3, destroyed: false};
+let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3, destroyed: false, shotCounter: 0};
 let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false};
 
 window.addEventListener('keydown', (event) => {
@@ -69,12 +69,12 @@ document.addEventListener("keydown", function(event) {
     }
 
     // shadow enemykeys -- to be deleted later
-    if (event.key == "i") {
+    if (event.key == "i" && enemyTank.angle < 360) {
         enemyTank.angle += 2;
         //angleSlider.value = enemyTank.angle;
     }
 
-    if (event.key == "k") {
+    if (event.key == "k" && enemyTank.angle > 280) {
         enemyTank.angle -= 2;
         //angleSlider.value = enemyTank.angle;
     }
@@ -257,6 +257,19 @@ function drawLevelHUD() {
     ctx.fillText(`Level: ${currentLevel}`, 0, 0);
 }
 
+function autoAdjustEnemyRange() {
+    if (enemyTank.shotCounter != 0 && enemyTank.angle >= 330 && enemyTank.angle <= 360) {
+        enemyTank.angle += 20;
+    } else if (enemyTank.shotCounter != 0 && enemyTank.angle <= 330 && enemyTank.angle >= 250) {
+        enemyTank.angle -= 60;
+    }
+}
+
+setInterval(() => {
+    autoAdjustEnemyRange();
+    fireEnemyCannon();
+    enemyTank.shotCounter +=1;
+}, 6000)
 
 function updateProjectiles() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -307,7 +320,7 @@ function updateProjectiles() {
                 let groundY = leftPoint.y + (rightPoint.y - leftPoint.y) * ((p.x - leftPoint.x) / (rightPoint.x - leftPoint.x))
                 
                 if (p.y >= groundY ) {
-                    createExplosion(p.x, groundY)
+                    //createExplosion(p.x, groundY)
                     projectiles.splice(index, 1);
                     explosionSound.currentTime = 0;
                     explosionSound.play()
