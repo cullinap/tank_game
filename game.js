@@ -8,6 +8,8 @@ let enemyPower = 50;
 let cannonSpeed = 10;
 let explosions = [];
 let debrisParticles = [];
+let enemyShotTracker = [];
+let projectPos = [];
 //const cannonY = canvas.height * 0.7 - 30;
 //const terrain = [];
 const terrainWidth = canvas.width;
@@ -18,16 +20,22 @@ const fireSound = new Audio("sounds/fire.mp3")
 const explosionSound = new Audio("sounds/explosion.mp3")
 const missSound = new Audio("sounds/miss.mp3")
 
+let flatGroundSwitch = true
+
+
 let gameState = 'start';
 let currentLevel = 1;
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
 let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3, destroyed: false, shotCounter: 0};
-let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false};
+let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false, hit: false};
 
 window.addEventListener('keydown', (event) => {
     if (gameState === 'start' && event.code === 'Space') {
         startGame();
+    } else if (gameState === 'newLevel' && event.code === 'Space') {
+        startLevel();
+        //gameState = 'playing';
     }
 })
 
@@ -37,6 +45,8 @@ function startGame() {
     generateEnemyTank();
     generateObject();
     updateProjectiles();
+
+    displayMessage(`level ${currentLevel}`);
 }
 
 document.addEventListener("keydown", function(event) {
@@ -222,15 +232,26 @@ function fireCannon() {
 }
 
 function startLevel() {
+    gameState = 'playing';
     terrain = [];
     projectiles = [];
     explosions = [];
     enemyTank.destroyed = false;
     enemyTank.health = 3 + currentLevel - 1;
+    enemyTank.angle = 330;
+    cannonPos.destroyed = false;
+    cannonPos.hit = false;
+    cannonPos.health = 3 + currentLevel - 1;
+    shotsLeft = 5;
 
     generateTerrain();
-    generateCannonPosition();
     generateEnemyTank();
+    generateObject();
+    updateProjectiles();
+
+    //generateTerrain();
+    //generateCannonPosition();
+    //generateEnemyTank();
 
     displayMessage(`level ${currentLevel}`);
 }
@@ -241,7 +262,9 @@ function endLevel() {
     explosions = [];
     enemyTank.destroyed = false;
     enemyTank.health = 3 + currentLevel - 1;
+    enemyTank.angle = 330;
     cannonPos.destroyed = false;
+    cannonPos.hit = false;
     cannonPos.health = 3 + currentLevel - 1;
 
     generateTerrain();
@@ -258,18 +281,60 @@ function drawLevelHUD() {
 }
 
 function autoAdjustEnemyRange() {
-    if (enemyTank.shotCounter != 0 && enemyTank.angle >= 330 && enemyTank.angle <= 360) {
-        enemyTank.angle += 20;
-    } else if (enemyTank.shotCounter != 0 && enemyTank.angle <= 330 && enemyTank.angle >= 250) {
-        enemyTank.angle -= 60;
+    /*
+    observe if long or short of target
+    if short keep adding till over target and vice versa with long 
+    once over the bracket has been established 
+    then cut the bracket in half continuously until the round is on target
+    -round hit target
+    -if it is long or short
+    -time between rounds
+    -if there is one over and one short
+    variables:
+    target_destroyed: false
+    target_hit: false
+    round_over: false
+    round_short: false
+    angle: default
+
+    example:
+    if round_over && target not hit increase angle to decrease range
+    if round_short && target not hit decrease the angle to increase range
+
+    */
+    if (enemyTank.shotCounter != 0 && cannonPos.hit === true) {
+        enemyTank.angle += 0;
+    } else if (enemyTank.shotCounter != 0 && projectPos.x < cannonPos.x) {
+        enemyTank.angle += 10; // cannon go down 
+    } else if (enemyTank.shotCounter != 0 && projectPos.x > cannonPos.x) {
+        enemyTank.angle -= 10; // cannon go up 
     }
 }
 
-setInterval(() => {
-    autoAdjustEnemyRange();
-    fireEnemyCannon();
-    enemyTank.shotCounter +=1;
-}, 6000)
+function passPositionValue(p) {
+    return p
+}
+
+function checkEnemyShotPosition(p) {
+    /*check explosion >= friendly tank then round over*/ 
+    if (cannonPos.hit === true) {
+        console.log(`hit`)
+    } else if (p.x < cannonPos.x) {
+        console.log(`no hit overn`)
+        console.log(`projectile: ${projectPos.x}`)
+        console.log(`cannon: ${cannonPos.x}`)
+    } else if (p.x > cannonPos.x) {
+        console.log(`no hit under`)
+        console.log(`projectile: ${projectPos.x}`)
+        console.log(`cannon: ${cannonPos.x}`)
+    }
+}
+
+// setInterval(() => {
+//     autoAdjustEnemyRange();
+//     fireEnemyCannon();
+//     enemyTank.shotCounter +=1;
+// }, 6000)
 
 function updateProjectiles() {
     ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -277,6 +342,8 @@ function updateProjectiles() {
 
     if (gameState === 'start') {
         drawOpeningScreen();
+    } else if (gameState === 'newLevel') {
+        drawLevelScreen();
     } else if (gameState === 'playing') {
         generateCannonPosition();
         drawCannon();
@@ -285,7 +352,7 @@ function updateProjectiles() {
         //deBugLines();
         drawEnemyTank();
         //generateObject();
-        drawObject();
+        //drawObject();
         drawTerrain();
         drawEnemyTargetLine();
 
@@ -301,6 +368,9 @@ function updateProjectiles() {
 
             if (checkEnemyTankCollision(p)) {
                 createExplosion(p.x, p.y);
+                cannonPos.hit = true;
+                projectPos = passPositionValue(p);
+                checkEnemyShotPosition(p);
                 projectiles.splice(index, 1);
                 explosionSound.currentTime = 0;
                 explosionSound.play();
@@ -322,6 +392,8 @@ function updateProjectiles() {
                 if (p.y >= groundY ) {
                     //createExplosion(p.x, groundY)
                     projectiles.splice(index, 1);
+                    projectPos = passPositionValue(p);
+                    checkEnemyShotPosition(p);
                     explosionSound.currentTime = 0;
                     explosionSound.play()
                     displayMessage("❌ Enemy Miss!");
@@ -352,7 +424,8 @@ function updateProjectiles() {
                 if(enemyTank.destroyed) {
                     setTimeout(() => {
                         currentLevel++;
-                        startLevel();
+                        gameState = 'newLevel'
+                        //startLevel();
                     }, 2000);
                 }
             }
