@@ -27,8 +27,8 @@ let gameState = 'start';
 let currentLevel = 1;
 
 let target = {x: Math.random() * 500 + 250, y: Math.random() * 200 + 100, radius: 20}
-let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3, destroyed: false, shotCounter: 0};
-let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3, destroyed: false, hit: false};
+let enemyTank = {x:0, y:200, angle: 330, bodyAngle: 0, health: 3 + currentLevel - 1, maxHealth: 3 + currentLevel - 1, destroyed: false, shotCounter: 0};
+let cannonPos = {x: 75, y: canvas.height * 0.7 - 30, angle: 45, health: 3 + currentLevel - 1, maxHealth: 3 + currentLevel - 1, destroyed: false, hit: false};
 
 window.addEventListener('keydown', (event) => {
     if (gameState === 'start' && event.code === 'Space') {
@@ -50,6 +50,10 @@ function startGame() {
 }
 
 document.addEventListener("keydown", function(event) {
+    if (event.key == "f") {
+        fireCannon();
+    }
+
     if (event.key == "ArrowLeft" && cannonPos.x > 50) {
         cannonPos.x -= cannonSpeed;
     }
@@ -136,7 +140,10 @@ function drawCannon() {
 
     let barWidth = 40; 
     let barHeight = 5;
-    let healthPercentage = cannonPos.health / 3;
+    let healthPercentage = cannonPos.health / cannonPos.maxHealth;
+    // console.log(cannonPos.health)
+    // console.log(cannonPos.maxHealth)
+    // console.log(healthPercentage)
 
     ctx.fillStyle = 
         healthPercentage > 0.5 ? "green":
@@ -192,6 +199,10 @@ function fireEnemyCannon() {
 let projectiles = []
 
 function fireCannon() {
+    console.log(`fire cannon triggered:`, gameState);
+    console.log(`shot tracker:`, shotsLeft);
+    if (gameState !== 'playing') return;
+
     if (shotsLeft <= 0) {
         displayMessage("🚫 No shots left! Reset the game.");
         return;
@@ -238,10 +249,12 @@ function startLevel() {
     explosions = [];
     enemyTank.destroyed = false;
     enemyTank.health = 3 + currentLevel - 1;
+    enemyTank.maxHealth = 3 + currentLevel - 1;
     enemyTank.angle = 330;
     cannonPos.destroyed = false;
     cannonPos.hit = false;
     cannonPos.health = 3 + currentLevel - 1;
+    cannonPos.maxHealth = 3 + currentLevel - 1;
     shotsLeft = 5;
 
     generateTerrain();

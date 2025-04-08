@@ -49,7 +49,10 @@ function drawEnemyTank() {
     
     let barWidth = 40; 
     let barHeight = 5;
-    let healthPercentage = enemyTank.health / 3;
+    let healthPercentage = enemyTank.health / enemyTank.maxHealth;
+    // console.log(enemyTank.health)
+    // console.log(enemyTank.maxHealth)
+    // console.log(healthPercentage)
 
     ctx.fillStyle = 
         healthPercentage > 0.5 ? "green":
